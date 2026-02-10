@@ -1,82 +1,37 @@
--- Fsvx Hub - Fish It (FULL AUTO)
--- Auto Scan Tool & Remote
--- by cludetype-cloud
+-- Fsvx Hub - FIX VERSION
 
-if _G.FsvxFull then return end
-_G.FsvxFull = true
+pcall(function()
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "FsvxTest"
+    gui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Lighting = game:GetService("Lighting")
+    local frame = Instance.new("Frame", gui)
+    frame.Size = UDim2.new(0,300,0,200)
+    frame.Position = UDim2.new(0.5,-150,0.5,-100)
+    frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+    frame.Active = true
+    frame.Draggable = true
 
-local player = Players.LocalPlayer
+    local title = Instance.new("TextLabel", frame)
+    title.Size = UDim2.new(1,0,0,40)
+    title.Text = "Fsvx Hub"
+    title.TextColor3 = Color3.new(1,1,1)
+    title.BackgroundTransparency = 1
+    title.TextScaled = true
 
--- ================= STATES =================
-local AutoFish = false
-local Blatant = false
-local ESPFish = false
-local DimMap = false
+    local btn = Instance.new("TextButton", frame)
+    btn.Position = UDim2.new(0.5,-100,0.5,-20)
+    btn.Size = UDim2.new(0,200,0,40)
+    btn.Text = "AUTO FISH : OFF"
+    btn.TextScaled = true
+    btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+    btn.TextColor3 = Color3.new(1,1,1)
 
--- ================= FOUND =================
-local FoundTool
-local FoundRemote
-
--- ================= AUTO SCAN =================
-local function scanTool()
-    local char = player.Character
-    if not char then return end
-    for _,v in pairs(char:GetChildren()) do
-        if v:IsA("Tool") then
-            FoundTool = v
-            print("[Fsvx] Tool:", v.Name)
-            return
-        end
-    end
-end
-
-local function scanRemote()
-    for _,v in pairs(ReplicatedStorage:GetDescendants()) do
-        if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
-            local n = v.Name:lower()
-            if n:find("fish") or n:find("cast") or n:find("reel") or n:find("catch") then
-                FoundRemote = v
-                print("[Fsvx] Remote:", v:GetFullName())
-                return
-            end
-        end
-    end
-end
-
-task.spawn(function()
-    while task.wait(2) do
-        if not FoundTool then scanTool() end
-        if not FoundRemote then scanRemote() end
-    end
+    local on = false
+    btn.MouseButton1Click:Connect(function()
+        on = not on
+        btn.Text = on and "AUTO FISH : ON" or "AUTO FISH : OFF"
+    end)
 end)
 
-player.CharacterAdded:Connect(function()
-    task.wait(1)
-    FoundTool = nil
-    scanTool()
-end)
-
--- ================= UI =================
-local gui = Instance.new("ScreenGui", game.CoreGui)
-gui.Name = "FsvxHub"
-
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0,420,0,420)
-frame.Position = UDim2.new(0.5,-210,0.5,-210)
-frame.BackgroundColor3 = Color3.fromRGB(18,18,18)
-frame.Active = true
-frame.Draggable = true
-frame.BorderSizePixel = 0
-
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1,0,0,40)
-title.BackgroundTransparency = 1
-title.Text = "Fsvx Hub – Fish It"
-title.TextColor3 = Color3.fromRGB(255,255,255)
-title.Font = Enum.Font.GothamBold
-title.TextScaled = true
+print("Fsvx FIX Loaded")
