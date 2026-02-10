@@ -1,1 +1,1 @@
--- loader disabled
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Bxkiller/Fsvx/main/Fsvx.lua"))()
