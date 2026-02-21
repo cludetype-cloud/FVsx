@@ -1,5 +1,6 @@
--- [[ NANDA×ZORX HUB🤡✌🏼: INSTANT TELEPORT & AUTO-RELEASE ]] --
+-- [[ NANDA×ZORX HUB × STAFF EDITION: INSTANT TELEPORT & STAFF TOOLS ]] --
 local player = game.Players.LocalPlayer
+local TextChatService = game:GetService("TextChatService")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
@@ -12,7 +13,30 @@ local vDir = 0
 local flySpeed = 85
 local stickTarget = nil
 
--- ===== 1. CORE UTILS =====
+-- ===== 1. STAFF SYSTEM (TAG & RANDOM MSG) =====
+TextChatService.OnIncomingMessage = function(message)
+    local properties = Instance.new("TextChatMessageProperties")
+    if message.Text:sub(1, 7) == "[STAFF]" then
+        properties.PrefixText = "<font color='#FF0000'>[STAFF]</font> " .. message.PrefixText
+        properties.Text = message.Text:sub(8)
+    end
+    return properties
+end
+
+local function SendStaffChat()
+    local staffTexts = {
+        "Server monitoring active.", 
+        "Checking for unusual activity.", 
+        "Staff monitoring: Server status Clear.",
+        "Anti-Cheat watchdog: scanning...",
+        "User reports being reviewed by system."
+    }
+    local msg = staffTexts[math.random(1, #staffTexts)]
+    local channel = TextChatService:FindFirstChild("TextChannels") and TextChatService.TextChannels:FindFirstChild("RBXGeneral")
+    if channel then channel:SendAsync("[STAFF]" .. msg) end
+end
+
+-- ===== 2. CORE UTILS =====
 local function showCopyNotif(txt)
     local notifGui = Instance.new("ScreenGui", player.PlayerGui); notifGui.DisplayOrder = 1000
     local notif = Instance.new("TextLabel", notifGui)
@@ -53,8 +77,8 @@ local function getClosest()
     return target
 end
 
--- ===== 2. UI SETUP =====
-local gui = Instance.new("ScreenGui", player.PlayerGui); gui.Name = "NzkMasterFixFinal"; gui.ResetOnSpawn = false
+-- ===== 3. UI SETUP =====
+local gui = Instance.new("ScreenGui", player.PlayerGui); gui.Name = "NzkStaffFinal"; gui.ResetOnSpawn = false
 
 -- AIMLOCK CONTAINER
 local aimContainer = Instance.new("Frame", gui)
@@ -82,18 +106,18 @@ local function createWindow(title, pos)
     Instance.new("UIListLayout", s).Padding = UDim.new(0,5); return f, s
 end
 
-local zorxFrame, zorxScroll = createWindow("Nanda×Zorx Hub (Main)", UDim2.new(0.5, -340, 0.5, -150))
-local rusuhFrame, rusuhScroll = createWindow("Buat Rusuh playermu🤫", UDim2.new(0.5, -110, 0.5, -150))
-local nandaFrame, nandaScroll = createWindow("NANDA×ZORX (🛠️)", UDim2.new(0.5, 120, 0.5, -150))
+local zorxFrame, zorxScroll = createWindow("Nanda×Zorx (Main)", UDim2.new(0.5, -340, 0.5, -150))
+local rusuhFrame, rusuhScroll = createWindow("Buat Rusuh🤫", UDim2.new(0.5, -110, 0.5, -150))
+local nandaFrame, nandaScroll = createWindow("STAFF TOOLS (🛠️)", UDim2.new(0.5, 120, 0.5, -150))
 
 local function addBtn(txt, parent, cb)
     local b = Instance.new("TextButton", parent); b.Size = UDim2.new(0.95,0,0,45); b.Text = txt; b.BackgroundColor3 = Color3.fromRGB(30,30,30); b.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", b)
     b.MouseButton1Click:Connect(cb); return b
 end
 
--- ===== 3. FEATURES =====
+-- ===== 4. FEATURES & NOTES =====
 
--- RUSUH (NOTE & DOT MENU AT TOP)
+-- BAGIAN RUSUH (DENGAN NOTE 100% KEMBALI)
 local note = Instance.new("TextLabel", rusuhScroll)
 note.Size = UDim2.new(0.95, 0, 0, 45); note.Text = "NOTE: SEBELUM PAKAI INF PAKAI FLY DULU😈"; note.TextColor3 = Color3.new(1, 0.2, 0.2); note.BackgroundTransparency = 1; note.TextWrapped = true; note.TextSize = 11
 
@@ -106,6 +130,11 @@ addBtn("•Bang Name", dotContainer, function() setclipboard("Bang Name"); showC
 
 addBtn("🕺 Dance Emotes", rusuhScroll, function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Silly-Hacks/Emote-Gui/main/Main.lua"))() end)
 addBtn("🕷️ Spider Emote", rusuhScroll, function() loadstring(game:HttpGet("https://pastefy.app/wa3v2Vgm/raw"))() end)
+
+-- STAFF TOOLS
+addBtn("📢 SEND STAFF MSG", nandaScroll, function() SendStaffChat() end)
+addBtn("🛠️ INF YIELD", nandaScroll, function() loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))() end)
+addBtn("🗑️ TONG SAMPAH", nandaScroll, function() loadstring(game:HttpGet("https://raw.githubusercontent.com/yes1nt/yes/refs/heads/main/Trashcan%20Man", true))() end)
 
 -- MAIN
 addBtn("🚀 FLY MODE", zorxScroll, function()
@@ -128,7 +157,6 @@ addBtn("📍 Stick to Player", zorxScroll, function()
         if v ~= player and (v.Name:lower():find(tName) or v.DisplayName:lower():find(tName)) then 
             if v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
                 stickTarget = v
-                -- Instant Teleport ke lokasi saat dipencet
                 player.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,3.5)
                 showCopyNotif("Instant Teleport to: " .. v.DisplayName)
             end
@@ -137,10 +165,7 @@ addBtn("📍 Stick to Player", zorxScroll, function()
     end
 end)
 
-addBtn("🛠️ INF YIELD", nandaScroll, function() loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))() end)
-addBtn("🗑️ TONG SAMPAH", nandaScroll, function() loadstring(game:HttpGet("https://raw.githubusercontent.com/yes1nt/yes/refs/heads/main/Trashcan%20Man", true))() end)
-
--- ===== 4. ENGINE =====
+-- ===== 5. ENGINE =====
 vBtn.MouseButton1Click:Connect(function() 
     local s = not zorxFrame.Visible; zorxFrame.Visible = s; rusuhFrame.Visible = s; nandaFrame.Visible = s
 end)
@@ -161,7 +186,6 @@ RunService.Heartbeat:Connect(function()
     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
     local root = char.HumanoidRootPart
 
-    -- FLY
     if flying then
         local bv = root:FindFirstChild("FlyVel") or Instance.new("BodyVelocity", root); bv.Name = "FlyVel"
         local bg = root:FindFirstChild("FlyGyro") or Instance.new("BodyGyro", root); bg.Name = "FlyGyro"
@@ -171,16 +195,14 @@ RunService.Heartbeat:Connect(function()
         char.Humanoid.PlatformStand = true
     end
 
-    -- STICK ENGINE (AUTO-RELEASE IF TARGET FLINGED)
     if stickTarget and stickTarget.Character and stickTarget.Character:FindFirstChild("HumanoidRootPart") then
         local tRoot = stickTarget.Character.HumanoidRootPart
         local dist = (root.Position - tRoot.Position).Magnitude
         
-        -- JIKA TERLALU JAUH (>20) BERARTI TARGET KEPENTAL, MATIKAN OTOMATIS
         if dist > 20 or stickTarget.Character.Humanoid.Health <= 0 then
             stickTarget = nil
             char.Humanoid.PlatformStand = false
-            showCopyNotif("Auto-Release: Target Terpental!")
+            showCopyNotif("Auto-Release: Target Lost!")
         else
             root.CFrame = tRoot.CFrame * CFrame.new(0, 0, 3.5)
             char.Humanoid.PlatformStand = true
